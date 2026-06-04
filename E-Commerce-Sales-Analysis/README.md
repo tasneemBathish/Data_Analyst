@@ -73,3 +73,53 @@ Validated that Champions have the highest average monetary value despite being a
 
 Output
 The final processed data is exported to olist_final_analysis.csv, which includes the original order details along with the assigned Segment for each customer, ready for Dashboarding.
+
+
+3) Enterprise Business Intelligence Dashboard (Power BI)
+
+Project Overview:
+In this final phase, I consumed the engineered dataset (`olist_final_analysis.csv`) to build a high-performance, interactive multi-page Power BI dashboard. The objective was to translate raw behavioral segments and logistics metrics into production-ready visual telemetry for decision-making.
+
+Dashboard Architecture & Core Pages:
+1. Sales & Logistics Overview
+   - Executive KPIs: Direct monitoring of Total Revenue, Total Freight, and Corporate Freight Ratio.
+   - Geographical Density: A categorical Treemap mapping customer acquisition density across individual Brazilian states.
+   - Supply Chain Monitoring: A dynamic matrix evaluating the Average Shipping Performance Index by destination state, utilizing dual-color conditional formatting to immediately isolate shipping delays or pricing anomalies.
+
+2. Customer RFM Deep Dive
+   - Cohort Density Distribution: An advanced Scatter Chart plotting customer counts against the Average RFM Score to isolate high-value profiles.
+   - Volume vs Value Mapping: A dual-axis Combo Chart contrasting individual behavioral segment sizes against their absolute revenue contribution.
+
+3. Product Insights & Sales Trends
+   - Unit Economics: A dynamic bar chart tracking the Freight-to-Price Ratio per category to isolate operational margin leakage.
+   - Portfolio Evaluation: A multi-variable Scatter Outlier chart correlating cumulative category revenue against aggregate shipping costs, identifying heavy low-margin goods.
+   - Macro Trends: A continuous time-series line chart tracking monthly revenue fluctuations.
+
+4. Sales Performance Dashboard
+   - Tactical Segmentation: Horizontal revenue splits detailing exactly which behavioral user groups drive core cash flows.
+   - Price Floor Indexation: Analyzing the average product price thresholds per category to track macro pricing positions across the entire store.
+
+Advanced BI Engineering & DAX Formulas:
+To build scalable, dynamic visuals and bypass default engine limitations, I implemented optimized DAX measures and engineered structural database components:
+
+1- Freight Burden Ratio:
+```dax
+    Freight_Ratio = DIVIDE(SUM('olist_final_analysis'[freight_value]), SUM('olist_final_analysis'[price]), 0)
+    ```
+2- Average Order Value (AOV):Engineered to evaluate true shopping cart values across orders.
+```dax
+    Average Order Value = DIVIDE([Total Sales], DISTINCTCOUNT(olist_final_analysis[order_id]))
+    ```
+3- Logistics Delay Index (Data Engineering Layer): Implemented as a row-by-row Calculated Column to feed the core shipping performance metrics without causing engine lag.
+```dax
+    Days_Diff = DATEDIFF('olist_final_analysis'[delivery_date], 'olist_final_analysis'[estimated_delivery_date], DAY)
+    ```
+4- Average Shipping Performance Index:
+```dax
+    Avg_Shipping_Performance = AVERAGE(olist_final_analysis[Days_Diff])
+    ```
+
+Strategic Business Takeaways:
+- Logistics Drain: Isolated severe cost-leakage in categories like `party_supplies`, which demonstrates a staggering 81.16% Freight-to-Price Ratio, proving that shipping overhead eats up almost the entire product asset value.
+- Supply Chain Bottlenecks: Identified critical negative shipping deltas in regional zones (such as MA, PI, AL), showing exactly where regional shipping contracts require immediate renegotiation.
+- Retention Strategy: Mapped a major volume of 'Hibernating' customers who still represent massive latent revenue potential, flashing a clear green light for database-driven re-engagement marketing.
