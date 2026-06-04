@@ -103,21 +103,17 @@ Advanced BI Engineering & DAX Formulas:
 To build scalable, dynamic visuals and bypass default engine limitations, I implemented optimized DAX measures and engineered structural database components:
 
 1- Freight Burden Ratio:
-```dax
     Freight_Ratio = DIVIDE(SUM('olist_final_analysis'[freight_value]), SUM('olist_final_analysis'[price]), 0)
-    ```
+    
 2- Average Order Value (AOV):Engineered to evaluate true shopping cart values across orders.
-```dax
     Average Order Value = DIVIDE([Total Sales], DISTINCTCOUNT(olist_final_analysis[order_id]))
-    ```
+    
 3- Logistics Delay Index (Data Engineering Layer): Implemented as a row-by-row Calculated Column to feed the core shipping performance metrics without causing engine lag.
-```dax
     Days_Diff = DATEDIFF('olist_final_analysis'[delivery_date], 'olist_final_analysis'[estimated_delivery_date], DAY)
-    ```
+
 4- Average Shipping Performance Index:
-```dax
     Avg_Shipping_Performance = AVERAGE(olist_final_analysis[Days_Diff])
-    ```
+   
 
 Strategic Business Takeaways:
 - Logistics Drain: Isolated severe cost-leakage in categories like `party_supplies`, which demonstrates a staggering 81.16% Freight-to-Price Ratio, proving that shipping overhead eats up almost the entire product asset value.
